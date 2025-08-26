@@ -2075,6 +2075,12 @@ void CBattleEntity::OnMobSkillFinished(CMobSkillState& state, action_t& action)
 
     if (auto* PMob = dynamic_cast<CMobEntity*>(this))
     {
+        // If the mob is under the effect of Hysteria, they do not fully complete their action.
+        if (PMob->StatusEffectContainer->HasStatusEffect(EFFECT_HYSTERIA))
+        {
+            setActionInterrupted(action, PTarget, MSGBASIC_NONE, 0);
+            return;
+        } 
         // store the skill used
         PMob->m_UsedSkillIds[PSkill->getID()] = GetMLevel();
     }
