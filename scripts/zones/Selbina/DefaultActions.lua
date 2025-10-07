@@ -1,7 +1,7 @@
 -- local ID = zones[xi.zone.SELBINA]
 
 return {
-    ['Battal']       = { event = 1102 },
+    -- ['Battal']       = { event = 1102 },
     ['Elfriede']     = { event = 25 },
     ['Devean']       = { event = 124 },
     ['Diederik']     = { event = 1111 },
