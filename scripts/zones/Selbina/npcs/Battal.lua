@@ -2,80 +2,53 @@
 -- Area: Selbina
 --  NPC: Battal
 -- Type: Melody Minstrel NPC
--- !pos TODO
+-- !pos -17.4290 -10.6055 25.9660 238
 -----------------------------------
 ---@type TNpcEntity
 local entity = {}
 
--- eventId is unique to each NPC
+-- eventId is unique to each Melody Minstrel NPC
 local eventId = 1102
 
--- Big Dict of the cutscene event ID's
--- Format is :[Chosen Option from NPC's menu] = Relevant Cutscene ID
-local cutscenes =
+-- Table includes all possible cutscenes and requirements that this npc will handle
+local csInfo =
 {
-    [1]   = 81,      --? The Rescue
-    [2]   = 173,    -- Aldo
-    [3]   = 31,     --? Under the Sea
-    --4 = ? Picture Perfect 1
-    --5 = ? Picture Perfect 2
-    --33 = ? Tenshodo Showdown 1
-    --34 = ? Tenshodo Showdown 2
-    [35]  = 1101,   --? I'll Take the Big Box
-    --36 = ? Its rainign mannequins
-    --37 = ? signed in blood 1
-    --38 = ? signedd in blood 2
-    --39 = ? chasign ddreams
-    --40 = ? treasures of the earth 1
-    --41 = ? treasures of the earth 2
-    [65]  = 10005,  -- CoP 6-3: More Questions than Answers
-    [97]  = 176,    --? Emissary from the Seas
-    [98]  = 177,    --? Set Free
-    [99]  = 178,    --? The Beginning (pt.1)
-    [100] = 179,    --? The Beginning (pt.2)
+    { -- SELBINA_QUESTS (1-32)
+        { listVal = 0x02, csId = 81,  type = "quest",       log = xi.questLog.OTHER_AREAS, requirement = xi.quest.id.otherAreas.THE_RESCUE    },
+        { listVal = 0x04, csId = 173, type = "uniqueEvent", log = 0,                       requirement = xi.uniqueEvent.MET_MATHILDES_SON     },
+        { listVal = 0x08, csId = 31,  type = "quest",       log = xi.questLog.OTHER_AREAS, requirement = xi.quest.id.otherAreas.UNDER_THE_SEA },
+        -- { listVal = 0x10, listOption = 4, csId = ???,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT },
+        -- { listVal = 0x20, listOption = 5, csId = ???,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT },
+    },
+    { -- OTHER_QUESTS (33-64)
+        { listVal = 0x02, csId = 10002, type = "quest", log = xi.questLog.WINDURST,    requirement = xi.quest.id.windurst.THE_TENSHODO_SHOWDOWN },
+        { listVal = 0x04, csId = 10004, type = "quest", log = xi.questLog.WINDURST,    requirement = xi.quest.id.windurst.THE_TENSHODO_SHOWDOWN },
+        { listVal = 0x08, csId = 1101,  type = "quest", log = xi.questLog.OUTLANDS,    requirement = xi.quest.id.outlands.I_LL_TAKE_THE_BIG_BOX },
+        { listVal = 0x10, csId = 1103,  type = "quest", log = xi.questLog.OTHER_AREAS, requirement = xi.quest.id.otherAreas.ITS_RAINING_MANNEQUINS },
+        { listVal = 0x20, csId = 1104,  type = "quest", log = xi.questLog.SANDORIA,    requirement = xi.quest.id.sandoria.SIGNED_IN_BLOOD },
+        { listVal = 0x40, csId = 1106,  type = "quest", log = xi.questLog.SANDORIA,    requirement = xi.quest.id.sandoria.SIGNED_IN_BLOOD },
+        { listVal = 0x80, csId = 1108,  type = "quest", log = xi.questLog.OUTLANDS,    requirement = xi.quest.id.outlands.CHASING_DREAMS },
+        -- { listVal = 0x100, csId = ???,  requirement = xi.quest.id.adoulin.TREASURES_OF_THE_EARTH },
+        -- { listVal = 0x200, csId = ???,  requirement = xi.quest.id.adoulin.TREASURES_OF_THE_EARTH },
+    },
+    { -- PROMATHIA_MISSIONS (65-96)
+        { listVal = 0x02, csId = 10005, type = "mission", log = xi.mission.log_id.COP, requirement = xi.mission.id.cop.MORE_QUESTIONS_THAN_ANSWERS },
+    },
+    { -- ADDITIONAL_SCENARIOS (97 - 128)
+        { listVal = 0x02, csId = 176, type = "mission", log = xi.mission.log_id.ROV, requirement = xi.mission.id.rov.EMISSARY_FROM_THE_SEAS },
+        { listVal = 0x04, csId = 177, type = "mission", log = xi.mission.log_id.ROV, requirement = xi.mission.id.rov.SET_FREE },
+        { listVal = 0x08, csId = 178, type = "mission", log = xi.mission.log_id.ROV, requirement = xi.mission.id.rov.THE_BEGINNING },
+        { listVal = 0x10, csId = 179, type = "mission", log = xi.mission.log_id.ROV, requirement = xi.mission.id.rov.THE_BEGINNING },
+    },
 }
 
--- TODO: Looks like for each item in the submenu goes up in bitwise 2's (2,4,8,16,32 ....)
-  -- Because it's simply a set of binary flags, but we need to go up to 32 possible options, it would be good to set the bits themselves but im not sure how this is done atm
-  -- So for now, i'm simply subtracting whole values.
-    -- This feels like it'd be a bit gross once it gets a bit too big.  surely there's some other way to check how far through a set of missions/quests we are?
-    --  except, probably not, considering that there at least is some cutscenes that are untethered to any quest or mission, and likewise, just quests in general will
-    --  fit into a weird line of events, heck even missions in the option window will not be aligned with order of mission?
-function calculateRequirements(player)
-    -- Each Minstrel needs this set of values to begin with and get altered later.
-    local csRequirements =
-    {
-        [1] = 0xFFFFFFFE,   -- SELBINA_QUESTS
-        [2] = 0xFFFFFFFE,   -- OTHER_QUESTS
-        [3] = 0xFFFFFFFE,   -- PROMATHIA_MISSIONS
-        [4] = 0xFFFFFFFE,   -- ADDITIONAL_SCENARIOS
-        [5] = 0xFFFFFFFE,   -- EMPTY
-        [6] = 0xFFFFFFFE,   -- EMPTY
-    }
-
-    -- SELBINA_QUESTS
-    -- Aldo
-    if player:hasCompletedUniqueEvent(xi.uniqueEvent.MET_MATHILDES_SON) then
-        csRequirements[1] = csRequirements[1] - 4
-    end
-
-    -- PROMATHIA_MISSIONS
-    -- CoP 6-3: More Questions than Answers 
-    if player:hasCompletedMission(xi.mission.log_id.COP, xi.mission.id.cop.MORE_QUESTIONS_THAN_ANSWERS) then
-        csRequirements[3] = csRequirements[3] - 2
-    end
-
-    return csRequirements 
-end
-
-
-entity.onTrigger = function(player, npc)
-    local csUnlocks = calculateRequirements(player)
-    xi.melodyMinstrel.onTrigger(player, eventId, csUnlocks)
+entity.onTrigger = function(player)
+    xi.melodyMinstrel.onTrigger(player, eventId, csInfo)
 end
 
 entity.onEventUpdate =  function(player, csid, option, npc)
-    xi.melodyMinstrel.onEventUpdate(player, csid, eventId, cutscenes[option])
+    xi.melodyMinstrel.onEventUpdate(player, csid, eventId, option, csInfo)
 end
 
 return entity
+
