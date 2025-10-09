@@ -4,10 +4,12 @@
 xi = xi or {}
 xi.melodyMinstrel = xi.melodyMinstrel or {}
 
+-- Cost to player to view a cutscene
 local gilCost = 10
 
 local function createList(player, csInfo)
     -- Default menu options
+    -- Each Minstrel has up to 6 catagories of cutscenes they can show
     local menuOptions =
     {
         [1] = 0xFFFFFFFE,
@@ -22,21 +24,23 @@ local function createList(player, csInfo)
     for catagory, option in pairs(csInfo) do
         for choice, vals in pairs(option) do
             -- For each record in csInfo, we perform whatever check is needed against it's log and requirement
+            -- We only care that a quest/mission has been complete, partially complete quests/missions do not appear on the NPC menu options.
+            local flag = 2 ^ choice
             if vals.type == "quest" then
                 if player:hasCompletedQuest(vals.log, vals.requirement) then
-                    menuOptions[catagory] = menuOptions[catagory] - vals.listVal
+                    menuOptions[catagory] = menuOptions[catagory] - flag
                 end
             elseif vals.type == "mission" then
                 if player:hasCompletedMission(vals.log, vals.requirement) then
-                    menuOptions[catagory] = menuOptions[catagory] - vals.listVal
+                    menuOptions[catagory] = menuOptions[catagory] - flag
                 end
             elseif vals.type == "uniqueEvent" then
                 if player:hasCompletedUniqueEvent(vals.requirement) then
-                    menuOptions[catagory] = menuOptions[catagory] - vals.listVal
+                    menuOptions[catagory] = menuOptions[catagory] - flag
                 end
             else
-                -- TODO: Not a quest, mission or uniqueEvent as a requirement, need to cancel out or figure out what else could be done...
-                -- Entirely Plausable that we simply do nothing for now, and this will not affect the menuOptions in the slightest.
+                -- TODO: Not a quest, mission or uniqueEvent as a requirement, is there any other possible things that might need to be checked?
+                -- Entirely Plausable that we simply do nothing for now, but it means if we don't handle it, then the CS won't appear in the list
             end
         end
     end
@@ -70,15 +74,17 @@ xi.melodyMinstrel.onEventUpdate = function(player, csid, eventId, option, csInfo
         -- Things to note:
         -- Each catagory can only hold up to 32 options, this is why we use 32 in the below maths.
         -- 'ceil(option/32)' will give us the catagory that option belongs to.
-        -- 'option % 32' will give us the exact record within a catagory (ie: 97 % 32  = 1, option 97 is the 1st record of catagory 4)
+        -- 'option modulo 32' will give us the exact record within a catagory (ie: 97 % 32  = 1, option 97 is the 1st record of catagory 4)
         local catagory   = math.ceil(option / 32)
         local choice     = math.fmod(option, 32)
         local cutsceneId = csInfo[catagory][choice].csId
         if cutsceneId ~= nil then
-             player:delGil(gilCost)
-             player:startEvent(cutsceneId)
-         else
-             player:release() -- Could this be cleaner? At the least for now it will prevent players from getting stuck if something goes wrong.
+            player:delGil(gilCost)
+            player:startEvent(cutsceneId)
+        else
+            -- Need to release the player in some fashion since by this point, the screen has faded to black and removed player movement.
+            -- It feels like this could be cleaner. At least for now it will prevent players from getting stuck if something goes wrong.
+            player:release()
         end
     end
 end

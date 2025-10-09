@@ -7,57 +7,44 @@
 ---@type TNpcEntity
 local entity = {}
 
-entity.onTrigger = function(player, npc)
-    -- Add-on Scenarios
-    local addonScenarios = 0xFFFFFFFE
-    if player:hasCompletedMission(xi.mission.log_id.AMK, xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP) then
-        addonScenarios = addonScenarios - 2 -- Drenched! It Began with a Raindrop.
-    end
--- *Need the correct csid
---    if player:hasCompletedMission(xi.mission.log_id.AMK, xi.mission.id.amk.HASTEN_IN_A_JAM_IN_JEUNO) then
---        addonScenarios = addonScenarios - 4 -- Hasten! In a Jam in Jeuno?
---    end
+-- eventId is unique to each Melody Minstrel NPC
+local eventId = 865
 
-    -- Seekers of Adoulin
-    local seekersOfAdoulin = 0xFFFFFFFE
--- *Need the correct csid
---    if player:hasCompletedMission(xi.mission.log_id.SOA, xi.mission.id.soa.RUMORS_FROM_THE_WEST) then
---        SeekersOfAdoulin = SeekersOfAdoulin - 2 -- Rumors from the West
---    end
+-- Table includes all possible cutscenes and requirements that this npc will handle
+local csInfo =
+{
+    { -- ADD-ON SCENARIOS
+        -- For the below Kupo D'etat cutscenes, there is some other requirement, related to mission.sections[1][zoneId] for this mission.
+        --  I beleive the check is to see which location the player actually performed the mission in, since it can be done in so many different moghouses.
+        --  this means that a slightly different requirement is needed, not just that the mission is complete, but also WHERE it was complete.
+        --  This could also apply to the kind of quest that you can turn in to any gate guard (eg: Bastok 1-3: Fetichism)
+        { csId = 30023, type = "mission", log = xi.mission.log_id.AMK, requirement = xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP },
+        { csId = 30024, type = "mission", log = xi.mission.log_id.AMK, requirement = xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP },
+        { csId = 878, type = "mission", log = xi.mission.log_id.SOA, requirement = xi.mission.id.soa.RUMORS_FROM_THE_WEST }, -- is the csid right?
+    },
+    { -- SEEKERS OF ADOULIN
+        { csId = 878, type = "mission", log = xi.mission.log_id.SOA, requirement = xi.mission.id.soa.RUMORS_FROM_THE_WEST }, -- is the csid right?
+        -- TODO: Why does this same cutscene appear for both of these catagories on this npc? something seems wrong here, need retail captures
+    },
+}
 
-    -- Determine if any cutscenes are available for the player.
-    local gil = player:getGil()
-    if
-        addonScenarios == 0xFFFFFFFE and
-        seekersOfAdoulin == 0xFFFFFFFE
-    then -- Player has no cutscenes available to be viewed.
-        gil = 0 -- Setting gil to a value less than 10(cost) will trigger the appropriate response from this npc.
-    end
+-- Interesting TODO Information with the above cutscenes.
+-- SOA: The same cutscene choice is apparently listed in both catagories.  On my own retail capture, i only see it appear in the 2nd catagory.  This may be because the character
+    -- I was using was from Bastok.  Could it be that there is a further check per catagory?
+-- AMK: Caveat: again my char i captured this with was from bastok: see npc: lamepaue in bastok markets... With that said, here's some info
+--  These two cutscenes both appear when DRENCHED_IT_BEGAN_WITH_A_RAINDROP is completed, the first is the cs that starts with a drop, 2nd is when you trade mog the items.
+--  We seem to also pass a lot of extra vars when starting these events, so there does appear to be some extra requirement to pass forward.
+--  as of now, i beleive the values are handling the check of the players alliegance, and perhaps switching the loaded zone.
+--  With nothign passed over, it will load the cutscene in the middle of the area, when it should appear inside the moghouse.
+--   Values from bastok are : 0x2CB7553D, 0x00, 0x05, 0x01011009, 0x03FFFFFF, 0x336BFFF6, 0xEB, 0x01
+--   No real clue what each one relates to just yet, i will need a capture of a character from sandy and windy
 
-    player:startEvent(865, addonScenarios, seekersOfAdoulin, 0xFFFFFFFE, 0xFFFFFFFE, 0xFFFFFFFE, 0xFFFFFFFE, 10, gil) -- CSID, Missions, Fame, ?, ?, ?, ?, Cost, TotalGilPlayerHas
+entity.onTrigger = function(player)
+    xi.melodyMinstrel.onTrigger(player, eventId, csInfo)
 end
 
-entity.onEventUpdate = function(player, csid, option, npc)
-    if not player:delGil(10) then
-        player:setLocalVar('Durogg_PlayCutscene', 2)  -- Cancel the cutscene.
-        player:updateEvent(0)
-    else
-        player:setLocalVar('Durogg_PlayCutscene', 1)
-    end
-end
-
-entity.onEventFinish = function(player, csid, option, npc)
-    if player:getLocalVar('Durogg_PlayCutscene') < 2 then
-        if option == 1 then        -- Drenched! It Began with a Raindrop
-            player:startEvent(30025, 0, 0, 0, 0, 0, 0, 231)
---        elseif option == 2 then        -- Hasten! In a Jam in Jeuno?
---            player:startEvent(CSID, 0, 0, 0, 0, 0, 0, 231)
---        elseif option == 33 then        -- Rumors from the West
---            player:startEvent(CSID)
-        end
-    end
-
-    player:setLocalVar('Durogg_PlayCutscene', 0)
+entity.onEventUpdate =  function(player, csid, option)
+    xi.melodyMinstrel.onEventUpdate(player, csid, eventId, option, csInfo)
 end
 
 return entity
