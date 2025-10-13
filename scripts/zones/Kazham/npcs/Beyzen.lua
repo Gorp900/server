@@ -43,10 +43,10 @@ local csInfo =
         { csId = 293,   type = "quest",     log = xi.questLog.WINDURST,     requirement = xi.quest.id.windurst.TUNING_OUT                   },
         { csId = 295,   type = "quest",     log = xi.questLog.WINDURST,     requirement = xi.quest.id.windurst.TUNING_OUT                   },
         { csId = 297,   type = "quest",     log = xi.questLog.WINDURST,     requirement = xi.quest.id.windurst.TUNING_OUT                   },
-        -- { csId = ???,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.RETURN_TO_THE_DEPTHS           },
-        -- { csId = ???,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.RETURN_TO_THE_DEPTHS           },
-        -- { csId = ???,   type = "quest",     log = xi.questLog.OUTLANDS,     requirement = xi.quest.id.outlands.VW_OP_054_ELSHIMO_LIST       },
-        -- { csId = ???,   type = "quest",     log = xi.questLog.OUTLANDS,     requirement = xi.quest.id.outlands.VW_OP_054_ELSHIMO_LIST       },
+        { csId = 299,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.RETURN_TO_THE_DEPTHS           },
+        { csId = 301,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.RETURN_TO_THE_DEPTHS           },
+        { csId = 313,   type = "quest",     log = xi.questLog.OUTLANDS,     requirement = xi.quest.id.outlands.VW_OP_054_ELSHIMO_LIST       },
+        { csId = 315,   type = "quest",     log = xi.questLog.OUTLANDS,     requirement = xi.quest.id.outlands.VW_OP_054_ELSHIMO_LIST       },
     },
 }
 

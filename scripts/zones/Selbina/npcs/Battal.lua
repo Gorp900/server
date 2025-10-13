@@ -17,8 +17,8 @@ local csInfo =
         { csId = 81,    type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.THE_RESCUE             },
         { csId = 173,   type = "uniqueEvent",   log = xi.questLog.OTHER_AREAS,  requirement = xi.uniqueEvent.MET_MATHILDES_SON              }, -- Cutscene: Aldo
         { csId = 31,    type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.UNDER_THE_SEA          },
-        -- { csId = ???,   type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT        },
-        -- { csId = ???,   type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT        },
+        { csId = 1110,  type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT        },
+        { csId = 1114,  type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT        },
     },
     { -- OTHER QUESTS
         { csId = 10002, type = "quest",         log = xi.questLog.WINDURST,     requirement = xi.quest.id.windurst.THE_TENSHODO_SHOWDOWN    },
@@ -28,8 +28,8 @@ local csInfo =
         { csId = 1104,  type = "quest",         log = xi.questLog.SANDORIA,     requirement = xi.quest.id.sandoria.SIGNED_IN_BLOOD          },
         { csId = 1106,  type = "quest",         log = xi.questLog.SANDORIA,     requirement = xi.quest.id.sandoria.SIGNED_IN_BLOOD          },
         { csId = 1108,  type = "quest",         log = xi.questLog.OUTLANDS,     requirement = xi.quest.id.outlands.CHASING_DREAMS           },
-        -- { csId = ???,   type = "quest",         log = xi.questLog.ADOULIN,      requirement = xi.quest.id.adoulin.TREASURES_OF_THE_EARTH    },
-        -- { csId = ???,   type = "quest",         log = xi.questLog.ADOULIN,      requirement = xi.quest.id.adoulin.TREASURES_OF_THE_EARTH    },
+        { csId = 10022, type = "quest",         log = xi.questLog.ADOULIN,      requirement = xi.quest.id.adoulin.TREASURES_OF_THE_EARTH    },
+        { csId = 10024, type = "quest",         log = xi.questLog.ADOULIN,      requirement = xi.quest.id.adoulin.TREASURES_OF_THE_EARTH    },
     },
     { -- PROMATHIA MISSIONS
         { csId = 10005, type = "mission",       log = xi.mission.log_id.COP,    requirement = xi.mission.id.cop.MORE_QUESTIONS_THAN_ANSWERS },
