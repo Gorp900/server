@@ -48,6 +48,27 @@ local function createList(player, csInfo)
     return menuOptions
 end
 
+local function getLocalMogHouse(player)
+    local currentZone = player:getZoneID()
+    local currentRegion = 0 -- Sandy
+    if currentZone >= 234 and currentZone <= 237 then
+        currentRegion = 1   -- Basty
+    elseif currentZone >= 238 and currentZone <= 242 then
+        currentRegion = 2   -- Windy
+    end
+    -- TODO: Might need to expand the currentRegion to also sort out Jeuno, Adoulin, Aht Urghan, Shadowreign
+
+    -- TODO: some of these earlier values might be related to a players furniture display in their own MH.
+    -- It will need some more investigation / captures to determine this, but for now for the purpose of just doing the cutscene at all, just leave it blank.
+    -- Some values from my own retail capture are: 0x2CB7553D, 0x00, 0x05, 0x01011009, 0x03FFFFFF, 0x336BFFF6, 0xEB, 0x01
+    -- Through my investigation all i know for sure are:
+    --   Param 7 is the current zone, needed for when a cutscene loads the map geometry since it has to reload the area you were in
+    --   Param 8 is the current city/region, used to determine the look of the moghouse in cutscene, but also to reload the correct music when cutscene ends
+    local result = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, currentZone, currentRegion }
+    return result
+end
+
+
 
 -----------------------------------
 -- public melody minstrel functions
@@ -78,9 +99,18 @@ xi.melodyMinstrel.onEventUpdate = function(player, csid, eventId, option, csInfo
         local catagory   = math.ceil(option / 32)
         local choice     = math.fmod(option, 32)
         local cutsceneId = csInfo[catagory][choice].csId
+        local extraInfo  = csInfo[catagory][choice].extraInfo
         if cutsceneId ~= nil then
+            if extraInfo ~= nil then
+                -- TODO: Will undoubtedly find more edge cases where we need to use different "extraInfo"
+                --      Should probably use flags, rather than strings
+                if extraInfo:find("mogHouse") then
+                    player:startEvent(cutsceneId, unpack(getLocalMogHouse(player)))
+                end
+            else
+                player:startEvent(cutsceneId)
+            end
             player:delGil(gilCost)
-            player:startEvent(cutsceneId)
         else
             -- Need to release the player in some fashion since by this point, the screen has faded to black and removed player movement.
             -- It feels like this could be cleaner. At least for now it will prevent players from getting stuck if something goes wrong.
