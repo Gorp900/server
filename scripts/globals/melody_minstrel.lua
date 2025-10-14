@@ -39,8 +39,10 @@ local function createList(player, csInfo)
                     menuOptions[catagory] = menuOptions[catagory] - flag
                 end
             else
-                -- TODO: Not a quest, mission or uniqueEvent as a requirement, is there any other possible things that might need to be checked?
+                -- TODO: Not a quest, mission or uniqueEvent as a requirement
+                --  Other possible options: roe (Records of Eminence, the tutorial), unity (again, tutorial/introduction), hiddenQuest (Are these handles differently to quests?)
                 -- Entirely Plausable that we simply do nothing for now, but it means if we don't handle it, then the CS won't appear in the list
+                -- NOTE: You might see blank types used in tables, this is simply so that the cutscene doesn't appear as a choice until we know the best choice, but helps the flag/choice math work
             end
         end
     end
