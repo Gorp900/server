@@ -11,7 +11,6 @@ local entity = {}
 local eventId = 326
 
 -- Table includes all possible cutscenes and requirements that this npc will handle
--- TODO: There's quite a few cutscenes that this NPC can handle which I'm not sure if the particular quests are implemented yet on LSB
 local csInfo =
 {
     { -- BASTOK MISSIONS
@@ -44,11 +43,10 @@ local csInfo =
     { -- OTHER QUESTS
         { csId = 342,   type = "quest",     log = xi.questLog.JEUNO,        requirement = xi.quest.id.jeuno.BEAT_AROUND_THE_BUSHIN          },
         { csId = 402,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.CONFESSIONS_OF_A_BELLMAKER },
-        { csId = 403,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        { csId = 404,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        { csId = 405,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        { csId = 406,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        -- ^ TODO: The above 4 cutscenes for PICTURE_PERFECT might all need some extraInfo Var. I beleive the players Adventuring Fellow is supposed to appear in the cutscenes.
+        { csId = 403,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT,   csParams = xi.melodyMinstrel.extras.ADVENTURING_FELLOW },
+        { csId = 404,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT,   csParams = xi.melodyMinstrel.extras.ADVENTURING_FELLOW },
+        { csId = 405,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT,   csParams = xi.melodyMinstrel.extras.ADVENTURING_FELLOW },
+        { csId = 406,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT,   csParams = xi.melodyMinstrel.extras.ADVENTURING_FELLOW },
         { csId = 434,   type = "quest",     log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.NO_STRINGS_ATTACHED         },
         { csId = 437,   type = "quest",     log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.PUPPETMASTER_BLUES          },
         { csId = 439,   type = "quest",     log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.PUPPETMASTER_BLUES          },
@@ -56,25 +54,25 @@ local csInfo =
         { csId = 492,   type = "",          log = TODO,                     requirement = TODO_DANCER_ATTIRE                                },
         -- ^ Dancer AF pieces, part of a hiddenQuest, TODO: Implement Requirement checking for hiddenQuest? or see what requirement is best.
         { csId = 497,   type = "",          log = TODO,                     requirement = TODO_DANCER_ATTIRE                                },
-        -- ^ as above. Also might need extraInfo var for writing the right piece of equipment in the CS text. see: quests/hiddenQuests/crated_dancer_artifact.lua
+        -- ^ as above. Also might need csParams var for writing the right piece of equipment in the CS text. see: quests/hiddenQuests/crated_dancer_artifact.lua
         { csId = 0,     type = "",          log = xi.questLog.CRYSTAL_WAR,  requirement = DRAFTED_BY_THE_DUCHY                              },
         { csId = 0,     type = "",          log = xi.questLog.CRYSTAL_WAR,  requirement = BATTLE_ON_A_NEW_FRONT                             },
         { csId = 0,     type = "",          log = xi.questLog.JEUNO,        requirement = VW_OP_126_QUFIM_INCURSION                         },
         -- ^ TODO: Above 3: Unimplemented? Requirement doesn't currently exist but should be this.
-        { csId = 24,    type = "roe",       log = xi.questlog.BASTOK,       requirement = xi.roe.records.1                                  },
-        -- ^ TODO: new type of requirement, this CS is seen after tutorial RoE completed, see NPC: Isakoth.lua or roe_records.lua (first step forward)
+        { csId = 24,    type = "roe",       log = nil,                      requirement = 1                                                 },
+        -- ^ Requirement is roe_record First_Step_Forward, but does not have appropriate name, only value.
         { csId = 0,     type = "",          log = TODO,                     requirement = TODO_TRUST_MUMOR                                  },
         -- ^ TODO: This CS is tied to the sunbreeze event 2014, how do we even track this if not check if the player has the reward?
-        { csId = 595,   type = "",          log = TODO,                     requirement = TODO_UNITY_CONCORD                                },
-        -- ^ TODO: Similar to above roe type, how best to tackle this requirement? This might also need extraInfo var, as the model for the voodoo doll is wrong
-        { csId = 0,     type = "",          log = TODO,                     requirement = TODO_UNITY_CONCORD                                },
+        { csId = 595,   type = "",          log = nil,                      requirement = TODO_UNITY_CONCORD                                },
+        -- ^ TODO: Similar to above roe type, how best to tackle this requirement? This might also need csParams var, as the model for the voodoo doll is wrong
+        { csId = 0,     type = "",          log = nil,                      requirement = TODO_UNITY_CONCORD                                },
         -- ^ TODO: Apparently there is a 2nd Unity Cutscene here, no idea what it is
         { csId = 0,     type = "",          log = TODO,                     requirement = TODO_TRUST_MUMOR_II                               },
         -- ^ TODO: This CS is tied to the sunbreeze event 2015, how do we even track this if not check if the player has the reward?
     },
     { -- ADD-ON SCENARIOS
-        { csId = 30025, type = "mission",   log = xi.mission.log_id.AMK,    requirement = xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP, extraInfo = "mogHouse" },
-        { csId = 30026, type = "mission",   log = xi.mission.log_id.AMK,    requirement = xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP, extraInfo = "mogHouse" },
+        { csId = 30025, type = "mission",   log = xi.mission.log_id.AMK,    requirement = xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP, csParams = xi.melodyMinstrel.extras.MOGHOUSE },
+        { csId = 30026, type = "mission",   log = xi.mission.log_id.AMK,    requirement = xi.mission.id.amk.DRENCHED_IT_BEGAN_WITH_A_RAINDROP, csParams = xi.melodyMinstrel.extras.MOGHOUSE },
         { csId = 30035, type = "mission",   log = xi.mission.log_id.ROV,    requirement = xi.mission.id.rov.RHAPSODIES_OF_VANADIEL },   
         { csId = 30036, type = "mission",   log = xi.mission.log_id.ROV,    requirement = xi.mission.id.rov.WHAT_LIES_BEYOND },
         { csId = 30039, type = "mission",   log = xi.mission.log_id.ROV,    requirement = xi.mission.id.rov.THE_BEGINNING },

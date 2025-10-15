@@ -15,7 +15,7 @@ local csInfo =
 {
     { -- SELBINA QUESTS
         { csId = 81,    type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.THE_RESCUE             },
-        { csId = 173,   type = "uniqueEvent",   log = xi.questLog.OTHER_AREAS,  requirement = xi.uniqueEvent.MET_MATHILDES_SON              }, -- Cutscene: Aldo
+        { csId = 173,   type = "uniqueEvent",   log = nil,                      requirement = xi.uniqueEvent.MET_MATHILDES_SON              }, -- Cutscene: Aldo
         { csId = 31,    type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.UNDER_THE_SEA          },
         { csId = 1110,  type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT        },
         { csId = 1114,  type = "quest",         log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT        },

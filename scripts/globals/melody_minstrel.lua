@@ -4,6 +4,14 @@
 xi = xi or {}
 xi.melodyMinstrel = xi.melodyMinstrel or {}
 
+-- TODO: Possible way to catagorize some additional info.  Can it just be 1,2,3... rather than flags? Is there a possible way that these might get combined?
+xi.melodyMinstrel.extras =
+{
+    MOGHOUSE           = 0x02,
+    BORGHERTZ          = 0x04,
+    ADVENTURING_FELLOW = 0x08,
+}
+
 -- Cost to player to view a cutscene
 local gilCost = 10
 
@@ -27,7 +35,17 @@ local function createList(player, csInfo)
             -- We only care that a quest/mission has been complete, partially complete quests/missions do not appear on the NPC menu options.
             local flag = 2 ^ choice
             if vals.type == "quest" then
-                if player:hasCompletedQuest(vals.log, vals.requirement) then
+                if vals.extraReqs ~= nil then
+                    -- Edge case for all possible Bogherts_XYZ_Hands Quests
+                    -- We only really care that the player has completed any one of them
+                    if vals.extraReqs == extras.BORGHERTZ then
+                        for i in 0, 14 do
+                            player:hasCompletedQuest(vals.log, vals.requirement + i) then
+                            menuOptions[catagory] = menuOptions[catagory] - flag
+                            break
+                        end
+                    end
+                elseif player:hasCompletedQuest(vals.log, vals.requirement) then
                     menuOptions[catagory] = menuOptions[catagory] - flag
                 end
             elseif vals.type == "mission" then
@@ -44,7 +62,7 @@ local function createList(player, csInfo)
                     menuOptions[catagory] = menuOptions[catagory] - flag
                 end
             elseif vals.type == "unity" then
-                -- AFAIK: the only cutscene is the related to picking a leader, which you must of done if you have a leader
+                -- AFAIK: the only cutscene is the one related to picking a leader, which you must of done if you have a leader
                 if player:getUnityLeader() then
                     menuOptions[catagory] = menuOptions[catagory] - flag
                 end
@@ -75,11 +93,18 @@ local function getLocalMogHouse(player)
     --      Some weird little differences, I was a different job at this point, and i had rearranged mh furniture? unsure what else it could be...
     -- Through my investigation all i know for sure are:
     --   Param 7 is the current zone, needed for when a cutscene loads the map geometry since it has to reload the area you were in
-    --   Param 8 is the current city/region, used to determine the look of the moghouse in cutscene, but also to reload the correct music when cutscene ends
+    --   Param 8 is the current city/region, used to determine the look of the moghouse in cutscene and to reload the correct music when cutscene ends
     local result = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, currentZone, currentRegion }
     return result
 end
 
+local function getAdventuringFellow(player)
+    -- TODO: The current assumption is that we need to get the model/name/whatever for the players adventuring fellow and pass these values to the event as well
+    --  For without these values we're going to see incorrect models in the cutscenes.
+    --  atm I don't think the adventuring fellow as a feature is in LSB, so this work is blocked until that gets added.
+    local result = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
+    return result
+end
 
 
 -----------------------------------
@@ -111,13 +136,14 @@ xi.melodyMinstrel.onEventUpdate = function(player, csid, eventId, option, csInfo
         local catagory   = math.ceil(option / 32)
         local choice     = math.fmod(option, 32)
         local cutsceneId = csInfo[catagory][choice].csId
-        local extraInfo  = csInfo[catagory][choice].extraInfo
+        local csParams   = csInfo[catagory][choice].csParams
+
         if cutsceneId ~= nil then
-            if extraInfo ~= nil then
-                -- TODO: Will undoubtedly find more edge cases where we need to use different "extraInfo"
-                --      Should probably use flags, rather than strings
-                if extraInfo:find("mogHouse") then
+            if csParams ~= nil then
+                if csParams == extras.MOGHOUSE then
                     player:startEvent(cutsceneId, unpack(getLocalMogHouse(player)))
+                elseif csParams == extras.ADVENTURING_FELLOW then
+                    player:startEvent(cutsceneId, unpack(getAdventuringFellow(player)))
                 end
             else
                 player:startEvent(cutsceneId)

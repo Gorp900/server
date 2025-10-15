@@ -13,7 +13,7 @@ return {
     ['Cumetouflaix']     = { text = ID.text.CUMETOUFLAIX_DIALOG },
     ['Daju']             = { event = 53 },
     ['Dhaso_Toehprin']   = { text = ID.text.DEPARTURE_NPC },
-    ['Dohhel']           = { event = 10028 },
+    -- ['Dohhel']           = { event = 10028 },
     ['Falak']            = { event = 28 },
     ['Funono']           = { event = 55 },
     ['Gatita']           = { event = 44 },
