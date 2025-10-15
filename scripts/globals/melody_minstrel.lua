@@ -38,11 +38,19 @@ local function createList(player, csInfo)
                 if player:hasCompletedUniqueEvent(vals.requirement) then
                     menuOptions[catagory] = menuOptions[catagory] - flag
                 end
+            elseif vals.type == "roe" then
+                -- AFAIK: the only cs related to this requirement is the RoE Tutorial/Introduction
+                if player:getEminenceCompleted(vals.requirement) then
+                    menuOptions[catagory] = menuOptions[catagory] - flag
+                end
+            elseif vals.type == "unity" then
+                -- AFAIK: the only cutscene is the related to picking a leader, which you must of done if you have a leader
+                if player:getUnityLeader() then
+                    menuOptions[catagory] = menuOptions[catagory] - flag
+                end
             else
-                -- TODO: Not a quest, mission or uniqueEvent as a requirement
-                --  Other possible options: roe (Records of Eminence, the tutorial), unity (again, tutorial/introduction), hiddenQuest (Are these handles differently to quests?)
-                -- Entirely Plausable that we simply do nothing for now, but it means if we don't handle it, then the CS won't appear in the list
-                -- NOTE: You might see blank types used in tables, this is simply so that the cutscene doesn't appear as a choice until we know the best choice, but helps the flag/choice math work
+                -- could we also need hiddenQuest as a type? Are these handled differently to quests?
+                -- For now if we don't get a matching type, assume the cutscenes requirements are simply not implemented right now so we do nothing.
             end
         end
     end
@@ -60,9 +68,11 @@ local function getLocalMogHouse(player)
     end
     -- TODO: Might need to expand the currentRegion to also sort out Jeuno, Adoulin, Aht Urghan, Shadowreign
 
-    -- TODO: some of these earlier values might be related to a players furniture display in their own MH.
+    -- TODO: Thought some vars might be to do with players furniture, upon investigatiop and captures, it is not, the MH is always empty in cutscenes
     -- It will need some more investigation / captures to determine this, but for now for the purpose of just doing the cutscene at all, just leave it blank.
     -- Some values from my own retail capture are: 0x2CB7553D, 0x00, 0x05, 0x01011009, 0x03FFFFFF, 0x336BFFF6, 0xEB, 0x01
+    --  a second attempt at some retail vars:      0x2CBE021A, 0x00, 0xFF, 0x00,       0x03FFFFFF, 0x00059A98, 0xEB, 0x01
+    --      Some weird little differences, I was a different job at this point, and i had rearranged mh furniture? unsure what else it could be...
     -- Through my investigation all i know for sure are:
     --   Param 7 is the current zone, needed for when a cutscene loads the map geometry since it has to reload the area you were in
     --   Param 8 is the current city/region, used to determine the look of the moghouse in cutscene, but also to reload the correct music when cutscene ends

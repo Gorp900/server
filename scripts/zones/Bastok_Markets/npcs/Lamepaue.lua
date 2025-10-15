@@ -34,24 +34,24 @@ local csInfo =
         { csId = 441,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.ACHIEVING_TRUE_POWER           },
         -- ^ TODO: 441 Seems like the logical choice for this CS, but doesn't seem to load right
         { csId = 473,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.TOO_MANY_CHEFS                 },
-        { csId = 475,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
-        { csId = 477,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
-        { csId = 479,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
-        { csId = 481,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
-        { csId = 483,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
-        { csId = 485,   type = "",          log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
+        { csId = 475,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
+        { csId = 477,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
+        { csId = 479,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
+        { csId = 481,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
+        { csId = 483,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
+        { csId = 485,   type = "quest",     log = xi.questLog.BASTOK,       requirement = xi.quest.id.bastok.A_PROPER_BURIAL                },
     },
     { -- OTHER QUESTS
         { csId = 342,   type = "quest",     log = xi.questLog.JEUNO,        requirement = xi.quest.id.jeuno.BEAT_AROUND_THE_BUSHIN          },
         { csId = 402,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.CONFESSIONS_OF_A_BELLMAKER },
-        { csId = 403,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        { csId = 404,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        { csId = 405,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
-        { csId = 406,   type = "",          log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
+        { csId = 403,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
+        { csId = 404,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
+        { csId = 405,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
+        { csId = 406,   type = "quest",     log = xi.questLog.OTHER_AREAS,  requirement = xi.quest.id.otherAreas.PICTURE_PERFECT            },
         -- ^ TODO: The above 4 cutscenes for PICTURE_PERFECT might all need some extraInfo Var. I beleive the players Adventuring Fellow is supposed to appear in the cutscenes.
         { csId = 434,   type = "quest",     log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.NO_STRINGS_ATTACHED         },
-        { csId = 437,   type = "",          log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.PUPPETMASTER_BLUES          },
-        { csId = 439,   type = "",          log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.PUPPETMASTER_BLUES          },
+        { csId = 437,   type = "quest",     log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.PUPPETMASTER_BLUES          },
+        { csId = 439,   type = "quest",     log = xi.questLog.AHT_URHGAN,   requirement = xi.quest.id.ahtUrhgan.PUPPETMASTER_BLUES          },
         { csId = 490,   type = "quest",     log = xi.questLog.JEUNO,        requirement = xi.quest.id.jeuno.COMEBACK_QUEEN                  },
         { csId = 492,   type = "",          log = TODO,                     requirement = TODO_DANCER_ATTIRE                                },
         -- ^ Dancer AF pieces, part of a hiddenQuest, TODO: Implement Requirement checking for hiddenQuest? or see what requirement is best.
@@ -61,11 +61,11 @@ local csInfo =
         { csId = 0,     type = "",          log = xi.questLog.CRYSTAL_WAR,  requirement = BATTLE_ON_A_NEW_FRONT                             },
         { csId = 0,     type = "",          log = xi.questLog.JEUNO,        requirement = VW_OP_126_QUFIM_INCURSION                         },
         -- ^ TODO: Above 3: Unimplemented? Requirement doesn't currently exist but should be this.
-        { csId = 24,    type = "roe",       log = TODO,                     requirement = TODO_RECORDS_OF_EMINENCE_QUEST                    },
-        -- ^ TODO: check csid, also new type of requirement, this CS is seen after tutorial RoE completed, see NPC: Isakoth.lua
+        { csId = 24,    type = "roe",       log = xi.questlog.BASTOK,       requirement = xi.roe.records.1                                  },
+        -- ^ TODO: new type of requirement, this CS is seen after tutorial RoE completed, see NPC: Isakoth.lua or roe_records.lua (first step forward)
         { csId = 0,     type = "",          log = TODO,                     requirement = TODO_TRUST_MUMOR                                  },
         -- ^ TODO: This CS is tied to the sunbreeze event 2014, how do we even track this if not check if the player has the reward?
-        { csId = 595,   type = "unity",     log = TODO,                     requirement = TODO_UNITY_CONCORD                                },
+        { csId = 595,   type = "",          log = TODO,                     requirement = TODO_UNITY_CONCORD                                },
         -- ^ TODO: Similar to above roe type, how best to tackle this requirement? This might also need extraInfo var, as the model for the voodoo doll is wrong
         { csId = 0,     type = "",          log = TODO,                     requirement = TODO_UNITY_CONCORD                                },
         -- ^ TODO: Apparently there is a 2nd Unity Cutscene here, no idea what it is
