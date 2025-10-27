@@ -40,9 +40,10 @@ local function createList(player, csInfo)
                     -- We only really care that the player has completed any one of them
                     if vals.extraReqs == extras.BORGHERTZ then
                         for i in 0, 14 do
-                            player:hasCompletedQuest(vals.log, vals.requirement + i) then
-                            menuOptions[catagory] = menuOptions[catagory] - flag
-                            break
+                            if player:hasCompletedQuest(vals.log, vals.requirement + i) then
+                                menuOptions[catagory] = menuOptions[catagory] - flag
+                                break
+                            end
                         end
                     end
                 elseif player:hasCompletedQuest(vals.log, vals.requirement) then
