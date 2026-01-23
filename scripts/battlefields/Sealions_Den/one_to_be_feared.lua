@@ -61,6 +61,15 @@ local function returnToAirship(player)
     end
 end
 
+local function printRemainingTime(player)
+    local battlefield = player:getBattlefield()
+    local timeRemaining = battlefield:getRemainingTime()
+    local minutesRemaining = math.floor(timeRemaining / 60)
+    local secondsRemaining = math.fmod(timeRemaining, 60)
+
+    player:printToPlayer(string.format("Time remaining: %s minutes %s seconds.", minutesRemaining, secondsRemaining), xi.msg.channel.NS_SAY)
+end
+
 function content.onExitTrigger(player, npc)
     return content:progressEvent(32003, npc:getID() - sealionsDenID.npc.AIRSHIP_DOOR_OFFSET + 1, player:getLocalVar('[OTBF]battleCompleted') * 2):setPriority(1001)
 end
@@ -120,10 +129,21 @@ content.sections =
 
             onEventFinish =
             {
+                [0] = function(player, csid, option, npc)
+                    printRemainingTime(player)
+                end,
+                [1] = function(player, csid, option, npc)
+                    printRemainingTime(player)
+                end,
+                [2] = function(player, csid, option, npc)
+                    printRemainingTime(player)
+                end,
+
                 [10] = function(player, csid, option, npc)
                     player:addTitle(xi.title.BRANDED_BY_LIGHTNING)
                     healCharacter(player)
                     returnToAirship(player)
+                    printRemainingTime(player)
 
                     player:setLocalVar('[OTBF]battleCompleted', 1)
                 end,
@@ -132,6 +152,7 @@ content.sections =
                     player:addTitle(xi.title.OMEGA_OSTRACIZER)
                     healCharacter(player)
                     returnToAirship(player)
+                    printRemainingTime(player)
 
                     player:setLocalVar('[OTBF]battleCompleted', 2)
                 end,
