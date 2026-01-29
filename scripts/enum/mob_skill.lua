@@ -175,6 +175,12 @@ xi.mobSkill =
     SMITE_OF_RAGE                 =  513,
     WHIRL_OF_RAGE                 =  514,
 
+    TOXIC_SPIT                    =  515, -- Race Runner / ENM: Like the Wind
+    GEIST_WALL                    =  516,
+    NUMBING_NOISE                 =  517,
+    NIMBLE_SNAP                   =  518,
+    CYCLOTAIL                     =  519,
+
     DANSE_MACABRE                 =  533,
     KARTSTRAHL                    =  534,
     BLITZSTRAHL                   =  535,
